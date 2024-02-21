@@ -5,4 +5,4 @@ openssl req -newkey rsa:2048 -nodes -keyout ./selfsign-ssl/privatekey.pem -x509 
 -addext "basicConstraints=critical,CA:TRUE,pathlen:0" \
 -addext "keyUsage=critical,keyCertSign,cRLSign,digitalSignature"
 
-openssl verify -CAfile ./selfsign-ssl/certificate.pem - verify_hostname '*.test.com' ./selfsign-ssl/certificate.pem
+openssl verify -CAfile ./selfsign-ssl/certificate.pem -verify_hostname '*.test.com' ./selfsign-ssl/certificate.pem
