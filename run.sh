@@ -8,7 +8,7 @@ function installOpenSSL() {
 
 function checkingOpenSSLInstallation() {
 
-   if [ -x "$(command -h openssl)" ]; then
+   if [ -x "$(command -v openssl)" ]; then
       echo "- openssl installed"
    else
 
@@ -32,14 +32,16 @@ function checkingOpenSSLInstallation() {
    fi
 }
 
+function genCert() {
+    openssl req -newkey rsa:2048 -nodes -keyout ./selfsign-ssl/privatekey.pem -x509 -days 365 -out ./selfsign-ssl/certificate.pem -subj "/CN=$domainname"
+    -addext "subjectAltName=DNS:$domainname" \
+    -addext "basicConstraints=critical,CA:TRUE,pathlen:0" \
+    -addext "keyUsage=critical,keyCertSign,cRLSign,digitalSignature"
 
-echo -n "- Enter your domainname?: Ex: www.test.com/*.test.com/app.test.com "
+    openssl verify -CAfile ./selfsign-ssl/certificate.pem -verify_hostname $domainname ./selfsign-ssl/certificate.pem
+}
+
+echo -n "- Enter your domainname?: Ex: [www.test.com/*.test.com/app.test.com]: "
 read domainname
 checkingOpenSSLInstallation
-
-openssl req -newkey rsa:2048 -nodes -keyout ./selfsign-ssl/privatekey.pem -x509 -days 365 -out ./selfsign-ssl/certificate.pem -subj "/CN=$domainname.com"
--addext "subjectAltName=DNS:$domainname.com" \
--addext "basicConstraints=critical,CA:TRUE,pathlen:0" \
--addext "keyUsage=critical,keyCertSign,cRLSign,digitalSignature"
-
-openssl verify -CAfile ./selfsign-ssl/certificate.pem -verify_hostname '$domainname' ./selfsign-ssl/certificate.pem
+genCert
