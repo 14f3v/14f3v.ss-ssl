@@ -8,7 +8,7 @@ Download a script via curl and run a script.
 
 
 ```bash
-curl -s https://github.com/14f3v/14f3v.ss-ssl/blob/main/run.sh | bash
+curl -sL https://github.com/14f3v/14f3v.ss-ssl/blob/main/run.sh | bash
 ```
 
 ## Support
