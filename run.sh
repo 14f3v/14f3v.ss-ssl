@@ -17,11 +17,11 @@ function checkingOpenSSLInstallation() {
 
       echo "- Could not find openssl installation"
       echo -n "- Would you like to install openssl?: [Y/N] "
-      read needToInstallDocker
+      read needToInstallOpenSSL
 
-      if [[ $needToInstallDocker ]]; then
+      if [[ $needToInstallOpenSSL ]]; then
 
-         if [[ $needToInstallDocker == "Y" || $needToInstallDocker == "y" ]]; then
+         if [[ $needToInstallOpenSSL == "Y" || $needToInstallOpenSSL == "y" ]]; then
             installOpenSSL
          else
             echo "- Please install openssl in your working echo-system"
