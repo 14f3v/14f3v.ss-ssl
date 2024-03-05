@@ -1,4 +1,7 @@
 #!/bin/sh
+domainname=""
+filetype=""
+outdir="./selfsign-ssl"
 
 function installOpenSSL() {
     echo "- installing openssl..."
@@ -33,15 +36,45 @@ function checkingOpenSSLInstallation() {
 }
 
 function genCert() {
-    openssl req -newkey rsa:2048 -nodes -keyout ./selfsign-ssl/privatekey.pem -x509 -days 365 -out ./selfsign-ssl/certificate.pem -subj "/CN=$domainname"
+
+    # Check if destination directory exists, if not create it
+    if [ ! -d "$outdir" ]; then
+        mkdir -p "$outdir"
+    fi
+
+    openssl req -newkey rsa:2048 -nodes -keyout $outdir/privatekey.pem -x509 -days 365 -out $outdir/certificate.pem -subj "/CN=$domainname"
     -addext "subjectAltName=DNS:$domainname" \
     -addext "basicConstraints=critical,CA:TRUE,pathlen:0" \
     -addext "keyUsage=critical,keyCertSign,cRLSign,digitalSignature"
 
-    openssl verify -CAfile ./selfsign-ssl/certificate.pem -verify_hostname $domainname ./selfsign-ssl/certificate.pem
+    openssl verify -CAfile $outdir/certificate.pem -verify_hostname $domainname $outdir/certificate.pem
 }
 
-echo -n "- Enter your domainname?: Ex: [www.test.com/*.test.com/app.test.com]: "
-read domainname
+# Iterate through the arguments provided
+while [ "$1" != "" ]; do
+   case $1 in
+      --domain )
+         shift
+         domainname=$1
+         ;;
+      --outdir )
+         shift
+         outdir=$1
+         ;;
+      * )
+         # Handle invalid argument
+         echo "Invalid argument: $1"
+         exit 1
+         ;;
+   esac
+   shift
+done
+
+# Check if domainname and filetype are provided
+if [ "$domainname" = "" ]; then
+    echo "Usage: $0 --domain <domain_name>"
+    exit 1
+fi
+
 checkingOpenSSLInstallation
 genCert
