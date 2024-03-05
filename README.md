@@ -8,8 +8,16 @@ Download a script via curl and run a script.
 
 
 ```bash
-curl -sL https://raw.githubusercontent.com/14f3v/14f3v.ss-ssl/main/run.sh | bash
+curl -sL https://raw.githubusercontent.com/14f3v/14f3v.ss-ssl/main/run.sh | bash -s -- --domain "*.example.com" --outdir ./certificates
+
 ```
+
+## Options
+
+1. **--domain**: This parameter specifies the domain name for which the SSL certificate will be generated. You can provide a **wildcard (*)** to generate a certificate for multiple subdomains under the specified domain. For example, **--domain "*.example.com"** will generate a certificate for all subdomains of example.com.
+
+2. **--outdir**: This parameter specifies the output directory where the SSL certificate files will be generated. If not specified, the script will use the default directory **./selfsign-ssl**. You can provide a custom directory path. For example, **--outdir ./certificates** will generate the certificate files in the certificates directory.
+
 
 ## Support
 
